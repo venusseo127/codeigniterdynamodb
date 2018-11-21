@@ -6,7 +6,7 @@ class Welcome extends CI_Controller {
         include_once($this->config->item('dynamodb').'aws-autoloader.php');
 		$this->load->helper('url');
 		$this->load->helper('date');
-		$this->load->model('Users_model','',TRUE);
+		$this->load->model('Rooms_model','',TRUE);
 	}
 	function index()
 	{
@@ -15,11 +15,11 @@ class Welcome extends CI_Controller {
 		);
         $room2 = array();
         
-		if (!$this->Users_model->table_exists()){
+		if (!$this->Rooms_model->table_exists()){
 			$this->load->view('no_table', $data);
 		} else {
 
-			$rooms = $this->Users_model->getAll(); // Find all members, limit by 5
+			$rooms = $this->Rooms_model->getAll(); // Find all members, limit by 5
 
             usort($rooms, function ($a, $b) { return ($a['roomid'] > $b['roomid']); });
 
@@ -32,7 +32,7 @@ class Welcome extends CI_Controller {
 	{
         
         //echo $memberid;
-		$roomslist = $this->Users_model->getByID($memberid); // Find member details
+		$roomslist = $this->Rooms_model->getByID($memberid); // Find member details
         //var_dump($roomslist);
         $data2['room1']=$roomslist;
 
@@ -43,7 +43,7 @@ class Welcome extends CI_Controller {
 	{
         echo $roomid;
         //return $memberid;
-		$roomslist = $this->Users_model->getByID($roomid); // Find member details
+		$roomslist = $this->Rooms_model->getByID($roomid); // Find member details
 		$data['room1']=$roomslist;
 		$data['inserted'] = FALSE;
 		// If form submitted
@@ -57,10 +57,10 @@ class Welcome extends CI_Controller {
 				'background' => $this->input->post('background')
 			);
             //print_r($room);
-			$this->Users_model->save($room); // Insert the member
+			$this->Rooms_model->save($room); // Insert the member
 			
 			$data2['inserted'] = TRUE;
-            $roomslist2 = $this->Users_model->getByID($roomid); // Find member details
+            $roomslist2 = $this->Rooms_model->getByID($roomid); // Find member details
 		    $data2['room1']=$roomslist2;
 			$this->load->view('view', $data2);
 		}else{
@@ -82,10 +82,10 @@ class Welcome extends CI_Controller {
 				'owner' => $this->input->post('owner'),
 				'background' => $this->input->post('background')
 			);
-			$addroom = $this->Users_model->save($room); // Insert the member
+			$addroom = $this->Rooms_model->save($room); // Insert the member
 
 			$data2['inserted'] = TRUE;
-            $roomslist2 = $this->Users_model->getByID($addroom); // Find member details
+            $roomslist2 = $this->Rooms_model->getByID($addroom); // Find member details
 		    $data2['room1']=$roomslist2;
 			$this->load->view('view', $data2);
 		}else{
@@ -97,10 +97,10 @@ class Welcome extends CI_Controller {
 	
 	function delete($memberid)
 	{
-		$members = $this->Users_model->deleteById($memberid); // Find member details
+		$members = $this->Rooms_model->deleteById($memberid); // Find member details
 		//redirect('/', 'refresh');
         if($members){
-            $rooms = $this->Users_model->getAll(); 
+            $rooms = $this->Rooms_model->getAll(); 
             usort($rooms, function ($a, $b) { return ($a['roomid'] > $b['roomid']); });
             $data['rooms'] = $rooms;
             $this->load->view('welcome_message', $data);
